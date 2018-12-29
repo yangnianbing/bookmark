@@ -2,7 +2,7 @@
   <div id="app">
     <Header/>
     <LeftMenu/>
-    <!-- <RecordList/> -->
+    <RecordList/>
   </div>
 </template>
 
@@ -26,6 +26,7 @@ export default {
   height: 100%;
   width: 100%;
   background-color: rgb(248, 249, 250);
+  text-align: center;
 }
 
 html,body{

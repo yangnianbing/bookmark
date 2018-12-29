@@ -50,8 +50,8 @@ export default {
 
 <style>
     .folder-tree{
-        display: inline-block;
         width: 20%;
+        float: left;
     }
 
     .folder-tree .el-tree{
