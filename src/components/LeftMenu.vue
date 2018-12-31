@@ -6,7 +6,8 @@
 
 <script>
 import {Tree} from 'element-ui'
-import {cloneDeep} from 'lodash'
+import {cloneDeep, remove} from 'lodash'
+import eventBus from '../eventBus';
 
 export default {
     name: 'FolderTree',
@@ -27,17 +28,22 @@ export default {
                        label: '博客',
                        type: 'folder',
                        id: 2,
+                   },{
+                       label: 'Iconfont-阿里巴巴矢量图标库',
+                       type: 'website',
+                       id: 4,
+                       url: 'https://cn.vuejs.org/v2/guide/class-and-style.html'
                    }
                ]
            }]
        }
     },
     mounted(){
-        this.$refs.tree.filter('');
+        this.$refs.tree.filter('')
     },
     methods: {
-        handleNodeClick(){
-            console.log(arguments)
+        handleNodeClick(node){
+            eventBus.$emit('recordList', node.children)
         },
         filterNode(value, data){
             return data.type === 'folder'

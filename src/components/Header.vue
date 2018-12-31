@@ -3,18 +3,33 @@
         <span class="title">书签</span>
         <div class="search-container">
             <i class="iconfont icon-search"></i>
-            <input type="text" v-model="filterText" class="search-input" placeholder="搜索书签"/>
+            <input type="text" v-model="filterText" @change="filterRecord" class="search-input" placeholder="搜索书签"/>
         </div>
-        <span class="menu"><i class="iconfont icon-menu"></i></span>
+        <span class="menu"><i ref="dropMenuAppender" class="iconfont icon-menu"></i></span>
+        <DropMenu ref="dropMenu" :menus="dropMenu"></DropMenu>
     </div>
 </template>
 
 <script>
+import DropMenu from './DropMenu';
 export default {
     name: 'Header',
+    components: {DropMenu},
     data(){
         return {
-            filterText: 'test'
+            filterText: 'test',
+            dropMenu: [
+                {act: 'import', label: '导入书签'}
+            ]
+        }
+    },
+    mounted() {
+        this.$refs.dropMenu.$refs.dropMenuContainer.style.top = this.$refs.dropMenuAppender.offsetTop + this.$refs.dropMenuAppender.offsetHeight + 'px';
+        this.$refs.dropMenu.$refs.dropMenuContainer.style.left = this.$refs.dropMenuAppender.offsetLeft - this.$refs.dropMenu.$refs.dropMenuContainer.offsetWidth + this.$refs.dropMenuAppender.offsetWidth + 'px'; 
+    },
+    methods: {
+        filterRecord(){
+
         }
     }
 }
