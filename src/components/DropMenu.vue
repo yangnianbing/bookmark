@@ -1,7 +1,7 @@
 <template>
-    <div ref="dropMenuContainer" class="drop-menu">
+    <div ref="dropMenuContainer" class="drop-menu box">
         <ul>
-            <li v-for="menu in menus" :key="menu.act" v-on:click="this.$emit(menu.act)">
+            <li v-for="menu in menus" :key="menu.act" v-on:click="menuClick(menu.handler)">
                 {{menu.label}}
             </li>
         </ul>
@@ -22,6 +22,11 @@ export default {
     },
     mounted(){
        
+    },
+    methods:{
+        menuClick(handler){
+            handler && handler();
+        }
     }
 }
 </script>
@@ -29,7 +34,17 @@ export default {
 <style>
     .drop-menu{
         display: inline-block;
-        position: relative;
+        position: absolute;
+    }
+
+    .drop-menu li{
+        height: 30px;
+        line-height: 30px;
+        padding: 0 10px;
+        cursor: pointer;
+    }
+    .drop-menu li:hover{
+        background-color: #e8f0fe
     }
 </style>
 

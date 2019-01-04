@@ -7,6 +7,7 @@
         </div>
         <span class="menu"><i ref="dropMenuAppender" class="iconfont icon-menu"></i></span>
         <DropMenu ref="dropMenu" :menus="dropMenu"></DropMenu>
+        <input ref="inputFile" type="file" style="display:none;" class="file"/>
     </div>
 </template>
 
@@ -19,13 +20,39 @@ export default {
         return {
             filterText: 'test',
             dropMenu: [
-                {act: 'import', label: '导入书签'}
+                {act: 'import', label: '导入书签', handler: (($vue) => {
+                    return function(){
+                        $vue.$refs.inputFile.click();
+                    }
+                })(this)}
             ]
         }
     },
     mounted() {
+        var $vue = this;
         this.$refs.dropMenu.$refs.dropMenuContainer.style.top = this.$refs.dropMenuAppender.offsetTop + this.$refs.dropMenuAppender.offsetHeight + 'px';
         this.$refs.dropMenu.$refs.dropMenuContainer.style.left = this.$refs.dropMenuAppender.offsetLeft - this.$refs.dropMenu.$refs.dropMenuContainer.offsetWidth + this.$refs.dropMenuAppender.offsetWidth + 'px'; 
+
+        this.$refs.inputFile.addEventListener('change', () => {
+            $vue.$refs.inputFile.files[0] && resolve($vue.$refs.inputFile.files[0]);
+        })
+
+        function resolve(file){
+            var fileReader = new FileReader();
+            fileReader.readAsText(file);
+            fileReader.onload = (e) => {
+                var html = fileReader.result;
+                console.log(parseToDOM(html));
+            }
+        }
+
+        function parseToDOM(html){
+        var div = document.createElement("div");
+            if(typeof html == "string")
+                div.innerHTML = html;
+            return div.childNodes;
+        }
+
     },
     methods: {
         filterRecord(){

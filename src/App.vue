@@ -37,4 +37,11 @@ ul{
   list-style: none;
   padding-inline-start: 0px;
 }
+
+.box{
+    box-shadow: rgba(60, 64, 67, .3) 0 1px 2px 0,
+              rgba(60, 64, 67, .15) 0 1px 3px 1px;
+    background-color: #fff;
+    border-radius: 4px;
+}
 </style>
