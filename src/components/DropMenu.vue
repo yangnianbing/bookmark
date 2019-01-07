@@ -1,6 +1,6 @@
 <template>
-    <div ref="dropMenuContainer" class="drop-menu box">
-        <ul>
+    <div v-show="visible" ref="dropMenuContainer" class="drop-menu box">
+        <ul class="menu-container">
             <li v-for="menu in menus" :key="menu.act" v-on:click="menuClick(menu.handler)">
                 {{menu.label}}
             </li>
@@ -14,7 +14,8 @@ export default {
     props: {
         menus: Array,
         position: Object,
-        appender: Object
+        appender: Object,
+        visible: Boolean
     },
     data(){
         return {
@@ -45,6 +46,9 @@ export default {
     }
     .drop-menu li:hover{
         background-color: #e8f0fe
+    }
+    .drop-menu .menu-container{
+        font-size: 14px;
     }
 </style>
 

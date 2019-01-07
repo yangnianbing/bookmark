@@ -25,7 +25,7 @@ export default {
   color: #2c3e50;
   width: 100%;
   background-color: rgb(248, 249, 250);
-  text-align: center;
+  /* text-align: center; */
 }
 
 html,body{
