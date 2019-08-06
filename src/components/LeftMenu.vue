@@ -7,7 +7,7 @@
 
 <script>
 import {Tree} from 'element-ui'
-import {cloneDeep, remove} from 'lodash'
+import {cloneDeep, remove, isArray} from 'lodash'
 import eventBus from '../eventBus';
 import Vue from 'vue';
 
@@ -21,28 +21,15 @@ export default {
                type: 'folder',
                id: '1',
                children: [
-                   {
-                       label: '百度',
-                       type: 'website',
-                       id: 3,
-                       url: 'http://www.baidu.com'
-                   },{
-                       label: '博客',
-                       type: 'folder',
-                       id: 2
-                   },{
-                       label: 'Iconfont-阿里巴巴矢量图标库',
-                       type: 'website',
-                       id: 4,
-                       url: 'https://cn.vuejs.org/v2/guide/class-and-style.html'
-                   }
+                  
                ]
            }],
            currentSelected:null
         }
     },
     mounted(){ 
-        this.$refs.tree.filter('')
+        var $vue = this;
+        $vue.$refs.tree.filter('')
         setTimeout(() => {
             var nodes = []
             walkLeafNode(this.tree, function(node){
@@ -64,12 +51,15 @@ export default {
         })
 
         eventBus.$on('addNode', (node) => {
+            if(!isArray(node)){
+                node = [node];
+            }
             if(this.currentSelected){
                 !this.currentSelected.children && Vue.set(this.currentSelected, 'children', [])
-                this.currentSelected.children.push(node);
+                this.currentSelected.children = this.currentSelected.children.concat(node);
                 eventBus.$emit('recordList', this.currentSelected.children);
             }else{
-                this.tree[0].children.push(node);
+                this.tree[0].children = this.tree[0].children.concat(node);
                 eventBus.$emit('recordList', this.tree[0].children);
             }
             setTimeout(() => this.$refs.tree.filter(''))

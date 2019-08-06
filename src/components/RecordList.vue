@@ -3,7 +3,7 @@
         <ul>
             <li v-for="(record, index) in recordList" v-bind:key="record.id" v-show="!record.hide">
                 <span class="icon"></span>
-                <a v-bind:href="record.url" class="record-link">{{record.label}}
+                <a v-bind:href="record.url" class="record-link" target="_blank">{{record.label}}
 
                 </a>
                 

@@ -21,11 +21,11 @@
             title="添加书签"
             :visible.sync="bookmarkDialogVisible"
             width="30%">
-            <div class="row"><label>名称</label><input type="text" v-model="bookmarkName"/></div>
-            <div class="row"><label>网址</label><input type="website" v-model="bookmarkUrl" /></div>
+            <div class="row"><label for="bookmarkName">名称</label><input name="bookmarkName" type="text" v-model="bookmarkName"/></div>
+            <div class="row"><label for="bookmarkUrl">网址</label><input name="bookmarkUrl" type="website" v-model="bookmarkUrl" /></div>
             <span slot="footer" class="dialog-footer">
-                <button @click="bookmarkDialogVisible = false">取消</button>
-                <button @click="saveBookmark">确定</button>
+                <button class="button white" @click="bookmarkDialogVisible = false">取消</button>
+                <button class="button blue" @click="saveBookmark">确定</button>
             </span>
         </Dialog>
 
@@ -33,10 +33,10 @@
             title="添加文件夹"
             :visible.sync="dirDialogVisible"
             width="30%">
-            <label>名称</label><input type="text" v-model="dirName"/>
+            <label for="dirName">名称</label><input name="dirName" type="text" v-model="dirName"/>
             <span slot="footer" class="dialog-footer">
-               <button @click="dirDialogVisible = false">取消</button>
-               <button @click="saveDir">确定</button>
+               <button class="button white" @click="dirDialogVisible = false">取消</button>
+               <button class="button blue" @click="saveDir">确定</button>
             </span>
         </Dialog>
     </div>
@@ -47,6 +47,8 @@ import DropMenu from './DropMenu';
 import {Dialog, Dropdown, DropdownMenu, DropdownItem} from 'element-ui';
 import eventBus from '../eventBus';
 import {throttle} from 'lodash'
+import { debug } from 'util';
+import idGenerator from '../idGenerator'
 
 export default {
     name: 'Header',
@@ -74,15 +76,56 @@ export default {
             fileReader.readAsText(file);
             fileReader.onload = (e) => {
                 var html = fileReader.result;
-                console.log(parseToDOM(html));
+                var domNode = parseToDOM(html);
+                var tree = toTree(domNode);
+                eventBus.$emit('addNode', tree);
             }
         }
 
         function parseToDOM(html){
-            var div = document.createElement("div");
-            if(typeof html == "string")
-                div.innerHTML = html;
-            return div.childNodes;
+            var $div = document.createElement("div");
+            if(typeof html == "string"){
+                $div.innerHTML = html;
+            }   
+            return filterChildNode($div.querySelector('dl'), 'dt');
+        }
+
+        function filterChildNode($div, tagName){
+            var nodes = [];
+            Array.from($div.children).forEach(node => {
+                if(node.tagName.toLowerCase() === tagName.toLowerCase()){
+                    nodes.push(node);
+                }
+            })
+            return nodes;
+        }
+        
+        function toTree($div){
+            var treeNodes = [];
+            $div.forEach(tmp => {
+                var h3 = filterChildNode(tmp, 'h3');
+                if(h3.length > 0){
+                    h3 = h3[0]
+                    treeNodes.push({
+                        label: h3.innerText,
+                        type: 'folder',
+                        id: idGenerator(),
+                        children: toTree(filterChildNode(filterChildNode(tmp, 'dl')[0], 'dt'))
+                    })
+                }else{
+                    var a = filterChildNode(tmp, 'a')
+                    if(a.length > 0){
+                        a = a[0]
+                    }
+                    treeNodes.push({
+                        label: a.innerText,
+                        url: a.href,
+                        id: idGenerator(),
+                        type: 'website'
+                    })
+                }
+            })
+            return treeNodes;
         }
 
     },
@@ -116,7 +159,7 @@ export default {
                 label: this.dirName,
                 children: [],
                 type: 'folder',
-                id: new Date().valueOf()
+                id: idGenerator()
             })
             this.hideDialog();
         },
@@ -125,7 +168,7 @@ export default {
                 label: this.bookmarkName,
                 url: this.bookmarkUrl,
                 type: 'website',
-                id: new Date().valueOf()
+                id: idGenerator()
             })
             this.hideDialog();
         },
@@ -195,8 +238,35 @@ export default {
         text-align: left
     }
 
-    /* .header .row label{
-        display: block;
-        line-height: 
-    } */
+    .header .row{
+        height: 40px;
+    }
+
+    .header .row input{
+        width: 370px;
+        margin-left: 10px;
+        height: 25px;
+        line-height: 25px;
+        border-radius: 4px;
+        border: 1px solid #DDDDDD
+    }
+
+    .header .button{
+        padding: 5px 15px;
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+    }
+
+    .header .button.white{
+        background: #fff;
+        color: rgb(51, 103, 214);
+    }
+
+    .header .button.blue{
+        background: rgb(51, 103, 214);
+        color: #fff
+    }
+
+
 </style>
