@@ -1,7 +1,7 @@
 {
   "name": "bookmark",
   "version": "1.0.0",
-  "description": "书签管理",
+  "description": "书签管理 ",
   "author": "yangnianbing@gmail.com",
   "private": true,
   "scripts": {
